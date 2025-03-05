@@ -57,8 +57,8 @@ async function fetchQuotesFromServer() {
         
         // Return a simplified version of the data
         return serverQuotes.map(item => ({
-            text: item.title, // Use 'title' as quote text for demonstration
-            category: item.userId.toString() // Using userId as a category for demonstration
+            text: item.title, // Using 'title' as quote text for demonstration
+            category: item.userId.toString() // Using userId as category for demonstration
         }));
     } catch (error) {
         console.error("Error fetching quotes from server:", error);
