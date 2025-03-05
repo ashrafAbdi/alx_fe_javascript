@@ -44,7 +44,7 @@ function displayQuotes(quotes) {
 }
 
 // Function to fetch quotes from the server (simulate server interaction)
-function fetchQuotesFromServer() {
+async function fetchQuotesFromServer() {
     // Simulating server fetch by returning a mock response
     return new Promise((resolve, reject) => {
         setTimeout(() => {
@@ -58,9 +58,11 @@ function fetchQuotesFromServer() {
     });
 }
 
-// Function to sync quotes with the server
-function syncQuotes() {
-    fetchQuotesFromServer().then(serverQuotes => {
+// Function to sync quotes with the server (use async/await here)
+async function syncQuotes() {
+    try {
+        const serverQuotes = await fetchQuotesFromServer();
+
         const localQuoteText = quotes.map(quote => quote.text);
         const serverQuoteText = serverQuotes.map(quote => quote.text);
 
@@ -77,9 +79,9 @@ function syncQuotes() {
 
         // Inform user if server has new quotes
         notifyUser("New quotes have been synced from the server!");
-    }).catch(error => {
+    } catch (error) {
         console.error("Error syncing quotes:", error);
-    });
+    }
 }
 
 // Function to notify user about sync or conflict resolution
@@ -119,32 +121,4 @@ document.getElementById('newQuote').addEventListener('click', function() {
 document.getElementById('exportButton').addEventListener('click', exportQuotes);
 
 // Event listener for the import button
-document.getElementById('importButton').addEventListener('click', () => {
-    document.getElementById('importFile').click();
-});
-
-// Function to export quotes as a JSON file
-function exportQuotes() {
-    const jsonBlob = new Blob([JSON.stringify(quotes, null, 2)], { type: 'application/json' });
-    const url = URL.createObjectURL(jsonBlob);
-
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = 'quotes.json';
-    a.click();
-}
-
-// Function to import quotes from a JSON file
-function importFromJsonFile(event) {
-    const fileReader = new FileReader();
-    fileReader.onload = function(event) {
-        const importedQuotes = JSON.parse(event.target.result);
-        quotes.push(...importedQuotes);
-        saveQuotes();
-        displayQuotes(quotes);
-        alert('Quotes imported successfully!');
-    };
-    fileReader.readAsText(event.target.files[0]);
-}
-
-// Initialize the app
+document.getElementById('importButton
