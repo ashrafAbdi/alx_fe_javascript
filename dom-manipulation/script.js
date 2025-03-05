@@ -43,22 +43,30 @@ function displayQuotes(quotes) {
     });
 }
 
-// Function to fetch quotes from the server (simulate server interaction)
+// Function to fetch quotes from the server using fetch API
 async function fetchQuotesFromServer() {
-    // Simulating server fetch by returning a mock response
-    return new Promise((resolve, reject) => {
-        setTimeout(() => {
-            // Simulated response from server (new or updated quotes)
-            const serverQuotes = [
-                { text: "New quote from the server!", category: "Inspiration" },
-                { text: "Another server quote.", category: "Life" }
-            ];
-            resolve(serverQuotes);
-        }, 2000); // Simulate network delay
-    });
+    try {
+        // Use fetch to get data from the mock API
+        const response = await fetch(API_URL); // Replace with actual API URL
+        if (!response.ok) {
+            throw new Error('Failed to fetch quotes from the server');
+        }
+        
+        // Parse the JSON response
+        const serverQuotes = await response.json(); // Use .json() to parse the JSON response
+        
+        // Return a simplified version of the data
+        return serverQuotes.map(item => ({
+            text: item.title, // Use 'title' as quote text for demonstration
+            category: item.userId.toString() // Using userId as a category for demonstration
+        }));
+    } catch (error) {
+        console.error("Error fetching quotes from server:", error);
+        return [];
+    }
 }
 
-// Function to sync quotes with the server (use async/await here)
+// Function to sync quotes with the server
 async function syncQuotes() {
     try {
         const serverQuotes = await fetchQuotesFromServer();
@@ -121,4 +129,36 @@ document.getElementById('newQuote').addEventListener('click', function() {
 document.getElementById('exportButton').addEventListener('click', exportQuotes);
 
 // Event listener for the import button
-document.getElementById('importButton
+document.getElementById('importButton').addEventListener('click', () => {
+    document.getElementById('importFile').click();
+});
+
+// Function to export quotes as a JSON file
+function exportQuotes() {
+    const jsonBlob = new Blob([JSON.stringify(quotes, null, 2)], { type: 'application/json' });
+    const url = URL.createObjectURL(jsonBlob);
+
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'quotes.json';
+    a.click();
+}
+
+// Function to import quotes from a JSON file
+function importFromJsonFile(event) {
+    const fileReader = new FileReader();
+    fileReader.onload = function(event) {
+        const importedQuotes = JSON.parse(event.target.result);
+        quotes.push(...importedQuotes);
+        saveQuotes();
+        displayQuotes(quotes);
+        alert('Quotes imported successfully!');
+    };
+    fileReader.readAsText(event.target.files[0]);
+}
+
+// Initialize the app
+window.onload = () => {
+    loadQuotes(); // Load quotes from localStorage
+    syncQuotes(); // Fetch quotes from the server and sync with local storage
+};
