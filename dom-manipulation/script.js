@@ -86,9 +86,10 @@ async function syncQuotes() {
         displayQuotes(quotes);
 
         // Inform user if server has new quotes
-        notifyUser("New quotes have been synced from the server!");
+        notifyUser("Quotes synced with server!");
     } catch (error) {
         console.error("Error syncing quotes:", error);
+        notifyUser("Failed to sync quotes with the server!", 'error');
     }
 }
 
@@ -113,6 +114,7 @@ async function postQuoteToServer(quote) {
         notifyUser('Quote posted to server successfully!');
     } catch (error) {
         console.error('Error posting quote to server:', error);
+        notifyUser('Failed to post quote to the server', 'error');
     }
 }
 
@@ -139,9 +141,9 @@ function addNewQuote() {
 }
 
 // Function to notify user about actions (e.g., successful post, sync, etc.)
-function notifyUser(message) {
+function notifyUser(message, type = 'success') {
     const notification = document.createElement('div');
-    notification.className = 'notification';
+    notification.className = `notification ${type}`;
     notification.textContent = message;
     document.body.appendChild(notification);
 
