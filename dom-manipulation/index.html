@@ -11,4 +11,18 @@
     <!-- Placeholder for dynamically displayed quotes -->
     <div id="quoteDisplay"></div>
 
-    <!-- 
+    <!-- Button to show a new quote -->
+    <button id="newQuote">Show New Quote</button>
+
+    <!-- Button to export quotes as JSON -->
+    <button id="exportButton">Export Quotes (JSON)</button>
+
+    <!-- File input for importing quotes (hidden) -->
+    <input type="file" id="importFile" accept=".json" style="display:none" onchange="importFromJsonFile(event)" />
+
+    <!-- Button to trigger the import action -->
+    <button id="importButton">Import Quotes (JSON)</button>
+
+    <script src="script.js"></script>
+</body>
+</html>
